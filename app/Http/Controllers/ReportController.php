@@ -34,6 +34,8 @@ class ReportController extends Controller
         $notArray = explode(',', $this->_currentSurveys);
         $entries = DB::table('entries')->whereNotIn('entryBeachID', $notArray)->get();
 
+        var_dump($entries);
+        exit();
 
         $dataTimestamp = date('m_d_Y');
 
