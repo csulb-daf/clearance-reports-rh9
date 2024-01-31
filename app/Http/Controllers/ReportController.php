@@ -34,9 +34,11 @@ class ReportController extends Controller
         $notArray = explode(',', $this->_currentSurveys);
 
         echo sizeof($notArray);
-        exit();
+
         $entries = DB::table('entries')->whereNotIn('entryBeachID', $notArray)->get();
 
+        echo sizeof($entries);
+        exit();
         $dataTimestamp = date('m_d_Y');
 
         return Excel::download(new ClearanceExport($entries), 'exit survey_export ' . $dataTimestamp .'.xlsx');
