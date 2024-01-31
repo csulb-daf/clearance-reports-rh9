@@ -14,4 +14,7 @@ use App\Http\Controllers\ReportController;
 |
 */
 
-Route::get('/', [ReportController::class, 'index']);
+Route::get('/export', [ReportController::class, 'index']);
+Route::get('/', function(){
+   return view('report');
+});

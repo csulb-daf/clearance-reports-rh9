@@ -24,20 +24,20 @@ class ReportController extends Controller
     public function index()
     {
 
-        echo "I got here";
 
-//        $this->requestExportDocument();
-//        $this->checkProgressForDocument();
-//        $this->parseExportDocument();
-//
-//
-//        $notArray = explode(',', $this->_currentSurveys);
-//        $entries = DB::table('entries')->whereNotIn('entryBeachID', $notArray)->get();
-//
-//
-//        $dataTimestamp = date('m_d_Y');
-//
-//        return Excel::download(new ClearanceExport($entries), 'exit survey_export ' . $dataTimestamp .'.xlsx');
+
+        $this->requestExportDocument();
+        $this->checkProgressForDocument();
+        $this->parseExportDocument();
+
+
+        $notArray = explode(',', $this->_currentSurveys);
+        $entries = DB::table('entries')->whereNotIn('entryBeachID', $notArray)->get();
+
+
+        $dataTimestamp = date('m_d_Y');
+
+        return Excel::download(new ClearanceExport($entries), 'exit survey_export ' . $dataTimestamp .'.xlsx');
 
     }
 
