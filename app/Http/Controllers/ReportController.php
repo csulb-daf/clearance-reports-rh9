@@ -107,7 +107,7 @@ class ReportController extends Controller
 
         $zip = new ZipArchive;
         if ($zip->open('gigs2.zip') === TRUE) {
-            $zip->extractTo('/Users/stevereed/Sites/localhost/clearancereports/public/uploads/');
+            $zip->extractTo('/svcmgmtdatadev/clearance-reports/public/uploads/');
             $zip->close();
             //    echo 'ok';
         } else {
