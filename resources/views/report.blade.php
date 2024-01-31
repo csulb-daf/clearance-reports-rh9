@@ -10,7 +10,7 @@
     <meta name="csrf-token" content="NUNjbnyDH87BYHnZuyN23Q5f8PHNbT275yxNJqUW">
 
     <title>
-        Academic Senate
+       Clearance Exit Survey Report
     </title>
 
     <!-- Scripts -->
