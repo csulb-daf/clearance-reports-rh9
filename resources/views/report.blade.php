@@ -73,7 +73,7 @@
                     <div class="col-md-8">
                         <div class="card">
                             <div class="card-body">
-                                <p>This Report take report in real time and will take 10 seconds</p>
+                                <p>This Report generates a report in real time and will take 10 seconds to generate</p>
                               <p><a href="/clearance-reports/export">Download the Report </a></p>
                             </div>
                         </div>
