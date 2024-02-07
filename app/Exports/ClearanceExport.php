@@ -39,6 +39,7 @@ class ClearanceExport implements FromCollection, WithHeadings
             'Clearance Declaration AV Equipment',
             'Clearance Declaration IT Equipment',
             'Clearance PCard ',
+            'Clearance Exit Survey',
             'Clearance Conflict',
             'Clearance Payroll',
             'Clearance Timestamp'];
