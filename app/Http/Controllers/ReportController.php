@@ -106,12 +106,12 @@ class ReportController extends Controller
 
         $file2 = file_get_contents('https://yul1.qualtrics.com/API/v3/surveys/' . $this->_surveyID .'/export-responses/' .  $this->_fileID.'/file', false, $context);
 
-        $res = file_put_contents('/svcmgmtdatadev/clearance-reports/public/uploads/gigs2.zip', $file2, FILE_TEXT);
+        $res = file_put_contents('/svcmgmtdata/clearance-reports/public/uploads/gigs2.zip', $file2, FILE_TEXT);
 
 
         $zip = new ZipArchive;
         if ($zip->open('gigs2.zip') === TRUE) {
-            $zip->extractTo('/svcmgmtdatadev/clearance-reports/public/uploads/');
+            $zip->extractTo('/svcmgmtdata/clearance-reports/public/uploads/');
             $zip->close();
             //    echo 'ok';
         } else {
