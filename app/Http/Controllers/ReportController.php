@@ -1,21 +1,25 @@
 <?php
 
 namespace App\Http\Controllers;
+
 use App\Exports\ClearanceExport;
-use Illuminate\Support\Facades\DB;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 use Maatwebsite\Excel\Facades\Excel;
 use ZipArchive;
 
 class ReportController extends Controller
 {
-
     private $_accessToken = 'WjlNxSP2URBXOcoDVhb3KRU6aBXmiJMMfb8xRnnn';
+
     private $_surveyID = 'SV_78tfiorSTVqiPrw';
+
     private $_progressID;
+
     private $_fileID;
 
     private $_currentSurveys;
+
     /**
      * Display a listing of the resource.
      *
@@ -24,42 +28,38 @@ class ReportController extends Controller
     public function index()
     {
 
-
-
         $this->requestExportDocument();
         $this->checkProgressForDocument();
         $this->parseExportDocument();
 
-
         $notArray = explode(',', $this->_currentSurveys);
 
-       // echo sizeof($notArray);
+        // echo sizeof($notArray);
 
         $entries = DB::table('entries')->whereNotIn('entryBeachID', $notArray)->get();
 
-       // echo sizeof($entries);
+        // echo sizeof($entries);
 
         $dataTimestamp = date('m_d_Y h:i:s A');
 
-        return Excel::download(new ClearanceExport($entries), 'exit survey_export ' . $dataTimestamp .'.xlsx');
+        return Excel::download(new ClearanceExport($entries), 'exit survey_export '.$dataTimestamp.'.xlsx');
 
     }
 
     public function requestExportDocument()
     {
-        $curlUrl = 'https://yul1.qualtrics.com/API/v3/surveys/' . $this->_surveyID .'/export-responses';
+        $curlUrl = 'https://yul1.qualtrics.com/API/v3/surveys/'.$this->_surveyID.'/export-responses';
 
         $curlParams = json_encode(['format' => 'json']);
         $curl = curl_init();
 
-        $header = array();
+        $header = [];
         $header[] = 'Content-type: application/json';
         $header[] = 'X-API-TOKEN: '.$this->_accessToken;
 
-
-        curl_setopt($curl, CURLOPT_HTTPHEADER,$header);
-        curl_setopt($curl, CURLOPT_POST,true);
-        curl_setopt($curl, CURLOPT_POSTFIELDS,$curlParams);
+        curl_setopt($curl, CURLOPT_HTTPHEADER, $header);
+        curl_setopt($curl, CURLOPT_POST, true);
+        curl_setopt($curl, CURLOPT_POSTFIELDS, $curlParams);
         curl_setopt($curl, CURLOPT_URL, $curlUrl);
         curl_setopt($curl, CURLOPT_RETURNTRANSFER, 1);
         $rest = json_decode(curl_exec($curl), true);
@@ -67,50 +67,47 @@ class ReportController extends Controller
         $this->_progressID = $rest['result']['progressId'];
         curl_close($curl);
 
-
-
     }
+
     public function checkProgressForDocument()
     {
         sleep(5);
 
-        $opts = array(
-            'http' => array(
-                'method' => "GET",
+        $opts = [
+            'http' => [
+                'method' => 'GET',
                 'Content-type' => 'application/json',
-                'header' => "X-API-TOKEN: " . $this->_accessToken . "\r\n"
-            )
-        );
+                'header' => 'X-API-TOKEN: '.$this->_accessToken."\r\n",
+            ],
+        ];
 
         $context = stream_context_create($opts);
 
-// Open the file using the HTTP headers set above
-        $file = file_get_contents('https://yul1.qualtrics.com/API/v3/surveys/' . $this->_surveyID . '/export-responses/' . $this->_progressID, false, $context);
+        // Open the file using the HTTP headers set above
+        $file = file_get_contents('https://yul1.qualtrics.com/API/v3/surveys/'.$this->_surveyID.'/export-responses/'.$this->_progressID, false, $context);
 
         $fileArray = json_decode($file, true);
-
 
         $this->_fileID = $fileArray['result']['fileId'];
     }
 
     public function parseExportDocument()
     {
-        $opts = array(
-            'http'=>array(
-                'method'=>"GET",
-                'header'=>"X-API-TOKEN: " . $this->_accessToken . "\r\n"
-            )
-        );
+        $opts = [
+            'http' => [
+                'method' => 'GET',
+                'header' => 'X-API-TOKEN: '.$this->_accessToken."\r\n",
+            ],
+        ];
 
         $context = stream_context_create($opts);
 
-        $file2 = file_get_contents('https://yul1.qualtrics.com/API/v3/surveys/' . $this->_surveyID .'/export-responses/' .  $this->_fileID.'/file', false, $context);
+        $file2 = file_get_contents('https://yul1.qualtrics.com/API/v3/surveys/'.$this->_surveyID.'/export-responses/'.$this->_fileID.'/file', false, $context);
 
         $res = file_put_contents('/svcmgmtdata/clearance-reports/public/uploads/gigs2.zip', $file2, FILE_TEXT);
 
-
         $zip = new ZipArchive;
-        if ($zip->open('gigs2.zip') === TRUE) {
+        if ($zip->open('gigs2.zip') === true) {
             $zip->extractTo('/svcmgmtdata/clearance-reports/public/uploads/');
             $zip->close();
             //    echo 'ok';
@@ -118,21 +115,17 @@ class ReportController extends Controller
             echo 'failed';
         }
 
-
         // Read the JSON file
         $json = file_get_contents('uploads/Exit Questionnaire - Production.json');
 
-// Decode the JSON file
-        $json_data = json_decode($json,true);
+        // Decode the JSON file
+        $json_data = json_decode($json, true);
 
-// Display data
+        // Display data
         $surveyBeachIDs = [];
-        if(!empty($json_data['responses']))
-        {
-            if(is_array($json_data['responses']))
-            {
-                foreach($json_data['responses'] as $clearPerson)
-                {
+        if (! empty($json_data['responses'])) {
+            if (is_array($json_data['responses'])) {
+                foreach ($json_data['responses'] as $clearPerson) {
                     $surveyBeachIDs[] = $clearPerson['values']['Username'];
                 }
             }
@@ -140,6 +133,7 @@ class ReportController extends Controller
 
         $this->_currentSurveys = implode(',', $surveyBeachIDs);
     }
+
     /**
      * Show the form for creating a new resource.
      *
@@ -153,7 +147,6 @@ class ReportController extends Controller
     /**
      * Store a newly created resource in storage.
      *
-     * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
     public function store(Request $request)
@@ -186,7 +179,6 @@ class ReportController extends Controller
     /**
      * Update the specified resource in storage.
      *
-     * @param  \Illuminate\Http\Request  $request
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
