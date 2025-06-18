@@ -1,7 +1,7 @@
 <?php
 
-use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\ReportController;
+use Illuminate\Support\Facades\Route;
 
 /*
 |--------------------------------------------------------------------------
@@ -15,6 +15,6 @@ use App\Http\Controllers\ReportController;
 */
 
 Route::get('/export', [ReportController::class, 'index']);
-Route::get('/', function(){
-   return view('report');
+Route::get('/', function () {
+    return view('report');
 });

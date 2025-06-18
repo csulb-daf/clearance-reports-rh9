@@ -9,6 +9,7 @@ use Maatwebsite\Excel\Concerns\WithHeadings;
 class ClearanceExport implements FromCollection, WithHeadings
 {
     private $surveyResults;
+
     public function __construct($surveyResults)
     {
         $this->surveyResults = $surveyResults;
@@ -17,7 +18,7 @@ class ClearanceExport implements FromCollection, WithHeadings
     public function collection()
     {
         return $this->surveyResults;
-        //return DB::table('entries')->get();
+        // return DB::table('entries')->get();
     }
 
     public function headings(): array
